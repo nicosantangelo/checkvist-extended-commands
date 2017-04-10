@@ -1,0 +1,23 @@
+{
+  "manifest_version": 2,
+  "name": "Checkvist extended commands",
+  "description": "Adds some more vim oriented commands to Checkvist",
+  "short_name": "Checkvist commands",
+  "version": "1.0.0",
+  "icons": {
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://checkvist.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": ["activeTab"]
+}

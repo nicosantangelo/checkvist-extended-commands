@@ -1,0 +1,11 @@
+{
+  "name": "Checkvist commands",
+  "version": "1.0.0",
+  "description": "Adds some more vim oriented commands to Checkvist",
+  "main": "content.js",
+  "author": "Nicolás Santángelo",
+  "license": "MIT",
+  "scripts": {},
+  "dependencies": {},
+  "devDependencies": {}
+}
