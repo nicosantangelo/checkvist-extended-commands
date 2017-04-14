@@ -1,48 +1,125 @@
 ;(function() {
   'use strict'
 
-  bindDelayed({
-    l: function() { maxkir.ChecklistNodeToggle.expand(getTaskId()) },
-    h: function() { maxkir.ChecklistNodeToggle.collapse(getTaskId()) },
-  })
+  // ----------------------------------------------------------
+  // CommandMapping
 
-  bind({
-    L: function() { maxkir.TaskFocus.set_focus(getTaskId()) },
-    H: function() { maxkir.TaskFocus.remove_focus(getTaskId()) }
-  })
+  function CommandMapping(actions) {
+    this.actions = actions
+  }
+
+  CommandMapping.prototype = {
+    actions: {}, // { letter: action() }
+
+    hasAction: function(letter) {
+      return !! this.getAction(letter)
+    },
+
+    exec: function(letter) {
+      var action = this.getAction(letter)
+      return action()
+    },
+
+    getAction: function(letter) {
+      return this.actions[letter]
+    }
+  }
 
 
-  function bindDelayed(actions) {
-    var runTimeoutId = null
-    var nullTimeoutId = null
+  // ----------------------------------------------------------
+  // Keyboard
 
-    document.body.addEventListener('keyup', function(event) {
-      clearTimeout(runTimeoutId)
-      clearTimeout(nullTimeoutId)
+  function Keyboard() {}
 
-      if (! maxkir.EditTracker.is_editing()) {
-        var action = actions[event.key]
-
-        if (action && runTimeoutId === null) {
-          runTimeoutId = setTimeout(action, 200)
+  Keyboard.prototype = {
+    bind: function(commands) {
+      document.body.addEventListener('keyup', function(event) {
+        if (! checkvist.isEditing()) {
+          var letter = this.getLetter(event)
+          if (commands.hasAction(letter)) commands.exec(letter)
         }
-      }
+      }.bind(this), false)
+    },
 
-      nullTimeoutId = setTimeout(function() { runTimeoutId = null }, 250)
+    bindWithDelay: function(commands) {
+      var runTimeoutId = null
+      var nullTimeoutId = null
 
-    }, false)
+      document.body.addEventListener('keyup', function(event) {
+        clearTimeout(runTimeoutId)
+        clearTimeout(nullTimeoutId)
+
+        if (! checkvist.isEditing()) {
+          var letter = this.getLetter(event)
+
+          if (commands.hasAction(letter) && runTimeoutId === null) {
+            runTimeoutId = setTimeout(function() { commands.exec(letter) }, 150)
+          }
+        }
+
+        nullTimeoutId = setTimeout(function() { runTimeoutId = null }, 200)
+
+      }.bind(this), false)
+    },
+
+    getLetter: function(event) {
+      var handler = {
+        72: function() {
+          return event.shiftKey ? 'H' : 'h'
+        },
+
+        76: function() {
+          return event.shiftKey ? 'L' : 'l'
+        }
+      }[event.which]
+
+      return handler && handler()
+    }
   }
 
-  function bind(actions) {
-    document.body.addEventListener('keyup', function(event) {
-      if (! maxkir.EditTracker.is_editing()) {
-        var action = actions[event.key]
-        if (action) action()
-      }
-    })
+  // ----------------------------------------------------------
+  // checkvist
+
+  var checkvist = {
+    collapse: function() {
+      return maxkir.ChecklistNodeToggle.collapse(this.getTaskId())
+    },
+
+    expand: function() {
+      return maxkir.ChecklistNodeToggle.expand(this.getTaskId())
+    },
+
+    setFocus: function() {
+      return maxkir.TaskFocus.set_focus(this.getTaskId())
+    },
+
+    removeFocus: function() {
+      return maxkir.TaskFocus.remove_focus(this.getTaskId())
+    },
+
+    isEditing: function() {
+      return maxkir.EditTracker.is_editing()
+    },
+
+    getTaskId: function() {
+      return maxkir.Task.selected_task_id()
+    }
   }
 
-  function getTaskId() {
-    return maxkir.Task.selected_task_id()
-  }
+
+  // ----------------------------------------------------------
+  // Main
+
+  var keyboard = new Keyboard()
+
+  keyboard.bindWithDelay(new CommandMapping({
+    h: function() { checkvist.collapse() },
+    l: function() { checkvist.expand() }
+  }))
+
+  keyboard.bind(new CommandMapping({
+    H: function() { checkvist.removeFocus() },
+    L: function() { checkvist.setFocus() }
+  }))
+
 })()
