@@ -2,78 +2,46 @@
   'use strict'
 
   // ----------------------------------------------------------
-  // CommandMapping
-
-  function CommandMapping(actions) {
-    this.actions = actions
-  }
-
-  CommandMapping.prototype = {
-    actions: {}, // { letter: action() }
-
-    hasAction: function(letter) {
-      return !! this.getAction(letter)
-    },
-
-    exec: function(letter) {
-      var action = this.getAction(letter)
-      return action()
-    },
-
-    getAction: function(letter) {
-      return this.actions[letter]
-    }
-  }
-
-
-  // ----------------------------------------------------------
   // Keyboard
 
   function Keyboard() {}
 
   Keyboard.prototype = {
     bind: function(commands) {
-      document.body.addEventListener('keyup', function(event) {
-        if (checkvist.commandCanRun()) {
-          var letter = this.getLetter(event)
-          if (commands.hasAction(letter)) commands.exec(letter)
-        }
-      }.bind(this), false)
+      for(var shortcut in commands) {
+        checkvist.addShortcut(shortcut, this._wrapAction(commands[shortcut]))
+      }
     },
 
     bindWithDelay: function(commands) {
+      for(var shortcut in commands) {
+        checkvist.addShortcut(shortcut, this._delayAction(commands[shortcut]))
+      }
+    },
+
+    _delayAction: function(action) {
       var runTimeoutId = null
       var nullTimeoutId = null
 
-      document.body.addEventListener('keyup', function(event) {
+      action = this._wrapAction(action)
+
+      return function() {
         clearTimeout(runTimeoutId)
         clearTimeout(nullTimeoutId)
 
-        if (checkvist.commandCanRun()) {
-          var letter = this.getLetter(event)
-
-          if (commands.hasAction(letter) && runTimeoutId === null) {
-            runTimeoutId = setTimeout(function() { commands.exec(letter) }, 150)
-          }
+        if (checkvist.commandCanRun() && runTimeoutId === null) {
+          runTimeoutId = setTimeout(action, 150)
         }
 
         nullTimeoutId = setTimeout(function() { runTimeoutId = null }, 200)
 
-      }.bind(this), false)
+      }
     },
 
-    getLetter: function(event) {
-      var handler = {
-        72: function() {
-          return event.shiftKey ? 'H' : 'h'
-        },
-
-        76: function() {
-          return event.shiftKey ? 'L' : 'l'
-        }
-      }[event.which]
-
-      return handler && handler()
+    _wrapAction: function(action) {
+      return function() {
+        if (checkvist.commandCanRun()) action()
+      }
     }
   }
 
@@ -81,6 +49,10 @@
   // checkvist
 
   var checkvist = {
+    addShortcut: function(shortcut, callback) {
+      return maxkir.kbd.addShortcut(shortcut, callback)
+    },
+
     collapse: function() {
       return maxkir.ChecklistNodeToggle.collapse(this.getTaskId())
     },
@@ -110,16 +82,19 @@
   // ----------------------------------------------------------
   // Main
 
+  // maxkir.tree_nav.selectFirstInTree()
+  // maxkir.tree_nav.selectLastInTree()
+
   var keyboard = new Keyboard()
 
-  keyboard.bindWithDelay(new CommandMapping({
-    h: function() { checkvist.collapse() },
-    l: function() { checkvist.expand() }
-  }))
+  keyboard.bindWithDelay({
+    h: function() { return checkvist.collapse() },
+    l: function() { return checkvist.expand() }
+  })
 
-  keyboard.bind(new CommandMapping({
-    H: function() { checkvist.removeFocus() },
-    L: function() { checkvist.setFocus() }
-  }))
+  keyboard.bind({
+    'shift+h': function() { return checkvist.removeFocus() },
+    'shift+l': function() { return checkvist.setFocus() }
+  })
 
 })()
