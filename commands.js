@@ -34,7 +34,7 @@
   Keyboard.prototype = {
     bind: function(commands) {
       document.body.addEventListener('keyup', function(event) {
-        if (! checkvist.isEditing()) {
+        if (checkvist.commandCanRun()) {
           var letter = this.getLetter(event)
           if (commands.hasAction(letter)) commands.exec(letter)
         }
@@ -49,7 +49,7 @@
         clearTimeout(runTimeoutId)
         clearTimeout(nullTimeoutId)
 
-        if (! checkvist.isEditing()) {
+        if (checkvist.commandCanRun()) {
           var letter = this.getLetter(event)
 
           if (commands.hasAction(letter) && runTimeoutId === null) {
@@ -97,8 +97,8 @@
       return maxkir.TaskFocus.remove_focus(this.getTaskId())
     },
 
-    isEditing: function() {
-      return maxkir.EditTracker.is_editing()
+    commandCanRun: function() {
+      return maxkir.cmd.can_run(true)
     },
 
     getTaskId: function() {
