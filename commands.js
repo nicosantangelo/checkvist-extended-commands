@@ -9,38 +9,41 @@
   Keyboard.prototype = {
     bind: function(commands) {
       for(var shortcut in commands) {
-        checkvist.addShortcut(shortcut, this._wrapAction(commands[shortcut]))
+        document.body.addEventListener('keyup', addShortcut(shortcut, commands[shortcut]), false)
+      }
+
+      function addShortcut(shortcut, action) {
+        var matcher = new maxkir.KbdMatcher(shortcut)
+
+        return function(event) {
+          if (checkvist.commandCanRun() && matcher.matches(event)) {
+            action()
+          }
+        }
       }
     },
 
     bindWithDelay: function(commands) {
       for(var shortcut in commands) {
-        checkvist.addShortcut(shortcut, this._delayAction(commands[shortcut]))
+        document.body.addEventListener('keyup', addShortcut(shortcut, commands[shortcut]), false)
       }
-    },
 
-    _delayAction: function(action) {
-      var runTimeoutId = null
-      var nullTimeoutId = null
+      function addShortcut(shortcut, action) {
+        var runTimeoutId = null
+        var nullTimeoutId = null
+        var matcher = new maxkir.KbdMatcher(shortcut)
 
-      action = this._wrapAction(action)
+        return function(event) {
+          clearTimeout(runTimeoutId)
+          clearTimeout(nullTimeoutId)
 
-      return function() {
-        clearTimeout(runTimeoutId)
-        clearTimeout(nullTimeoutId)
+          if (checkvist.commandCanRun() && matcher.matches(event) && runTimeoutId === null) {
+            console.log('Run')
+            runTimeoutId = setTimeout(action, 200)
+          }
 
-        if (checkvist.commandCanRun() && runTimeoutId === null) {
-          runTimeoutId = setTimeout(action, 150)
+          nullTimeoutId = setTimeout(function() { runTimeoutId = null }, 250)
         }
-
-        nullTimeoutId = setTimeout(function() { runTimeoutId = null }, 200)
-
-      }
-    },
-
-    _wrapAction: function(action) {
-      return function() {
-        if (checkvist.commandCanRun()) action()
       }
     }
   }
@@ -49,10 +52,6 @@
   // checkvist
 
   var checkvist = {
-    addShortcut: function(shortcut, callback) {
-      return maxkir.kbd.addShortcut(shortcut, callback)
-    },
-
     collapse: function() {
       return maxkir.ChecklistNodeToggle.collapse(this.getTaskId())
     },
