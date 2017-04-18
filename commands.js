@@ -54,7 +54,15 @@
     newKbdMatcher: function(shortcut) {
       var matcher = new maxkir.KbdMatcher(shortcut)
       maxkir.KbdMatcher.matchers.pop() // Remove from the global matchers list, to avoid conflicts
-      return matcher
+
+      return {
+        // Take advantage of the native mathing without using it directly to avoid overriding events
+        // This is a naive implementation, good enough for now
+        matches: function(event) {
+          var keys = matcher.shortcuts[0][0]
+          if (matcher._matchModifiers(event, keys[0]) && matcher._matchKey(event, keys[1])) return true
+        }
+      }
     },
 
     collapse: function() {
