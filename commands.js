@@ -8,42 +8,41 @@
 
   Keyboard.prototype = {
     bind: function(commands) {
-      for(var shortcut in commands) {
-        document.body.addEventListener('keyup', addShortcut(shortcut, commands[shortcut]), false)
-      }
-
-      function addShortcut(shortcut, action) {
-        var matcher = new maxkir.KbdMatcher(shortcut)
-
-        return function(event) {
-          if (checkvist.commandCanRun() && matcher.matches(event)) {
-            action()
-          }
-        }
-      }
+      this.bindCommands(commands, this._handleShortcut.bind(this))
     },
 
     bindWithDelay: function(commands) {
+      this.bindCommands(commands, this._handleDelayedShortcut.bind(this))
+    },
+
+    bindCommands: function(commands, getHandler) {
       for(var shortcut in commands) {
-        document.body.addEventListener('keyup', addShortcut(shortcut, commands[shortcut]), false)
+        document.body.addEventListener('keyup', getHandler(shortcut, commands[shortcut]), false)
       }
+    },
 
-      function addShortcut(shortcut, action) {
-        var runTimeoutId = null
-        var nullTimeoutId = null
-        var matcher = new maxkir.KbdMatcher(shortcut)
+    _handleShortcut: function(shortcut, action) {
+      var matcher = checkvist.newKbdMatcher(shortcut)
 
-        return function(event) {
-          clearTimeout(runTimeoutId)
-          clearTimeout(nullTimeoutId)
+      return function(event) {
+        if (checkvist.commandCanRun() && matcher.matches(event)) action()
+      }
+    },
 
-          if (checkvist.commandCanRun() && matcher.matches(event) && runTimeoutId === null) {
-            console.log('Run')
-            runTimeoutId = setTimeout(action, 200)
-          }
+    _handleDelayedShortcut: function(shortcut, action) {
+      var runTimeoutId = null
+      var nullTimeoutId = null
+      var matcher = checkvist.newKbdMatcher(shortcut)
 
-          nullTimeoutId = setTimeout(function() { runTimeoutId = null }, 250)
+      return function(event) {
+        clearTimeout(runTimeoutId)
+        clearTimeout(nullTimeoutId)
+
+        if (checkvist.commandCanRun() && matcher.matches(event) && runTimeoutId === null) {
+          runTimeoutId = setTimeout(action, 200)
         }
+
+        nullTimeoutId = setTimeout(function() { runTimeoutId = null }, 250)
       }
     }
   }
@@ -52,6 +51,12 @@
   // checkvist
 
   var checkvist = {
+    newKbdMatcher: function(shortcut) {
+      var matcher = new maxkir.KbdMatcher(shortcut)
+      maxkir.KbdMatcher.matchers.pop() // Remove from the global matchers list, to avoid conflicts
+      return matcher
+    },
+
     collapse: function() {
       return maxkir.ChecklistNodeToggle.collapse(this.getTaskId())
     },
@@ -87,13 +92,13 @@
   var keyboard = new Keyboard()
 
   keyboard.bindWithDelay({
-    h: function() { return checkvist.collapse() },
-    l: function() { return checkvist.expand() }
+    h: function() { checkvist.collapse() },
+    l: function() { checkvist.expand() }
   })
 
   keyboard.bind({
-    'shift+h': function() { return checkvist.removeFocus() },
-    'shift+l': function() { return checkvist.setFocus() }
+    'shift+h': function() { checkvist.removeFocus() },
+    'shift+l': function() { checkvist.setFocus() }
   })
 
 })()
