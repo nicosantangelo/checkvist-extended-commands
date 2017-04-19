@@ -8,41 +8,30 @@
 
   Keyboard.prototype = {
     bind: function(commands) {
-      this.bindCommands(commands, this._handleShortcut.bind(this))
+      for(var shortcut in commands) {
+        checkvist.addShortcut(shortcut, commands[shortcut])
+      }
     },
 
     bindWithDelay: function(commands) {
-      this.bindCommands(commands, this._handleDelayedShortcut.bind(this))
-    },
-
-    bindCommands: function(commands, getHandler) {
       for(var shortcut in commands) {
-        document.body.addEventListener('keyup', getHandler(shortcut, commands[shortcut]), false)
+        checkvist.addShortcut(shortcut, this._handleDelayedShortcut(commands[shortcut]))
       }
     },
 
-    _handleShortcut: function(shortcut, action) {
-      var matcher = checkvist.newKbdMatcher(shortcut)
-
-      return function(event) {
-        if (checkvist.commandCanRun() && matcher.matches(event)) action()
-      }
-    },
-
-    _handleDelayedShortcut: function(shortcut, action) {
+    _handleDelayedShortcut: function(action) {
       var runTimeoutId = null
       var nullTimeoutId = null
-      var matcher = checkvist.newKbdMatcher(shortcut)
 
       return function(event) {
         clearTimeout(runTimeoutId)
         clearTimeout(nullTimeoutId)
 
-        if (checkvist.commandCanRun() && matcher.matches(event) && runTimeoutId === null) {
-          runTimeoutId = setTimeout(action, 200)
+        if (checkvist.commandCanRun() && runTimeoutId === null) {
+          runTimeoutId = setTimeout(action, 150)
         }
 
-        nullTimeoutId = setTimeout(function() { runTimeoutId = null }, 250)
+        nullTimeoutId = setTimeout(function() { runTimeoutId = null }, 200)
       }
     }
   }
@@ -51,18 +40,19 @@
   // checkvist
 
   var checkvist = {
-    newKbdMatcher: function(shortcut) {
+    addShortcut: function(shortcut, callback) {
       var matcher = new maxkir.KbdMatcher(shortcut)
       maxkir.KbdMatcher.matchers.pop() // Remove from the global matchers list, to avoid conflicts
 
-      return {
-        // Take advantage of the native mathing without using it directly to avoid overriding events
-        // This is a naive implementation, good enough for now
-        matches: function(event) {
-          var keys = matcher.shortcuts[0][0]
-          if (matcher._matchModifiers(event, keys[0]) && matcher._matchKey(event, keys[1])) return true
-        }
-      }
+      // Take advantage of the native mathing without using it directly to avoid overriding events
+      // This is a naive implementation, good enough for now
+      return maxkir.kbd.forCondition(function(event) {
+        var keys = matcher.shortcuts[0][0]
+        return matcher._matchModifiers(event, keys[0]) && matcher._matchKey(event, keys[1])
+
+      }).addHook(function(event) {
+        callback(event)
+      })
     },
 
     collapse: function() {
