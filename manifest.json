@@ -3,7 +3,7 @@
   "name": "Checkvist extended commands",
   "description": "Adds some more VIM oriented commands to Checkvist",
   "short_name": "Checkvist commands",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "icons": {
     "48": "icons/48.png",
     "128": "icons/128.png"
