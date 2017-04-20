@@ -42,14 +42,15 @@
   var checkvist = {
     addShortcut: function(shortcut, callback) {
       var matcher = new maxkir.KbdMatcher(shortcut)
-      maxkir.KbdMatcher.matchers.pop() // Remove from the global matchers list, to avoid conflicts
 
-      // Take advantage of the native mathing without using it directly to avoid overriding events
-      // This is a naive implementation, good enough for now
+      maxkir.KbdMatcher.matchers.pop()
+
+      matcher.resetUnmatched = function(keys) {
+        matcher.has_sequence(keys) || matcher.reset()
+      }
+
       return maxkir.kbd.forCondition(function(event) {
-        var keys = matcher.shortcuts[0][0]
-        return matcher._matchModifiers(event, keys[0]) && matcher._matchKey(event, keys[1])
-
+        return matcher.matches(event)
       }).addHook(function(event) {
         callback(event)
       })
@@ -83,9 +84,6 @@
 
   // ----------------------------------------------------------
   // Main
-
-  // maxkir.tree_nav.selectFirstInTree()
-  // maxkir.tree_nav.selectLastInTree()
 
   var keyboard = new Keyboard()
 
