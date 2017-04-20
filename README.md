@@ -12,7 +12,7 @@ It adds four new commands to [Checkvist](https://checkvist.com)
 | `H`  | Un-focus the list item (same as `Shift ←`)  |
 | `o`  | Add below (same as `enter`)  |
 | `O`  | Add above (same as `alt+enter`)  |
-| `alt+g alt+g`  | Go to the first item in the tree (same as `Home` or `Fn+Up`). [Why not `gg`](#caveats)  |
+| `gg`  | Go to the first item in the tree (same as `Home` or `Fn+Up`)  |
 | `G`  | Go to the last item in the tree (same as `End` or `Fn+Down`)  |
 | `meta+j`  | macOS users: Move list items down (same as `⌘ ↓`) |
 | `meta+k`  | macOS users: Move list items up (same as `⌘ ↑`)  |
@@ -35,9 +35,3 @@ javascript:CODE_FROM_commands.min.js_HERE
 ```bash
 nativefier 'https://checkvist.com' -n Checkvist --inject checkvist-extended-commands/commands.js
 ```
-
-# Caveats
-
-Because many of the default VIM shortcuts are already used by [Checkvist](https://checkvist.com) I have to make a few concessions. The most noticiable is that I can't use `gg` (or any of it counterparts) to go to the first item on the tree, settling on `alt+g alt+g` which is much worse.
-
-For a version that doesn't take much of this into account (it uses `gg` for example) check the [`daring`](https://github.com/NicoSantangelo/checkvist-extended-commands/tree/daring) branch
