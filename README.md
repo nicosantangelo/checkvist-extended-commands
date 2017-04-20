@@ -11,7 +11,7 @@ It adds four new commands to [Checkvist](https://checkvist.com)
 | `h`  | Collapse node (same as `←`)  |
 | `H`  | Un-focus the list item (same as `Shift ←`)  |
 | `alt+g alt+g`  | Go to the first item in the tree (same as `Home` or `Fn+Up`). [Why not `gg`](#caveats)  |
-| `shift+g`  | Go to the last item in the tree (same as `End` or `Fn+Down`)  |
+| `G`  | Go to the last item in the tree (same as `End` or `Fn+Down`)  |
 
 
 # How
@@ -35,3 +35,5 @@ nativefier 'https://checkvist.com' -n Checkvist --inject checkvist-extended-comm
 # Caveats
 
 Because many of the default VIM shortcuts are already used by [Checkvist](https://checkvist.com) I have to make a few concessions. The most noticiable is that I can't use `gg` (or any of it counterparts) to go to the first item on the tree, settling on `alt+g alt+g` which is much worse.
+
+For a version that doesn't take much of this into account (it uses `gg` for example) check the [`daring`](https://github.com/NicoSantangelo/checkvist-extended-commands/tree/daring) branch
