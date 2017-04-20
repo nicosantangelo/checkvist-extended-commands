@@ -102,6 +102,9 @@
   })
 
   keyboard.bind({
+    h: function() { checkvist.collapse() },
+    l: function() { checkvist.expand() },
+    'g g': function() { maxkir.tree_nav.selectFirstInTree() }, // Just use ctrl+g ctrl+g for the native feature
     'shift+h': function() { checkvist.removeFocus() },
     'shift+l': function() { checkvist.setFocus() },
     'shift+o': function(event) { maxkir.cmd.add_task(true) && Event.stop(event) },
