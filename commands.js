@@ -89,12 +89,14 @@
 
   keyboard.bindWithDelay({
     h: function() { checkvist.collapse() },
-    l: function() { checkvist.expand() }
+    l: function() { checkvist.expand() },
+    'shift+g': function() { maxkir.tree_nav.selectLastInTree() }
   })
 
   keyboard.bind({
     'shift+h': function() { checkvist.removeFocus() },
-    'shift+l': function() { checkvist.setFocus() }
+    'shift+l': function() { checkvist.setFocus() },
+    'alt+g alt+g': function() { maxkir.tree_nav.selectFirstInTree() }
   })
 
 })()
