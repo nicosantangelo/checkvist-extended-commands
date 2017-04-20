@@ -28,7 +28,7 @@
         clearTimeout(nullTimeoutId)
 
         if (checkvist.commandCanRun() && runTimeoutId === null) {
-          runTimeoutId = setTimeout(action, 150)
+          runTimeoutId = setTimeout(function() { action(event) }, 150)
         }
 
         nullTimeoutId = setTimeout(function() { runTimeoutId = null }, 200)
@@ -90,14 +90,14 @@
   keyboard.bindWithDelay({
     h: function() { checkvist.collapse() },
     l: function() { checkvist.expand() },
-    o: function() { maxkir.cmd.add_task() },
+    o: function(event) { maxkir.cmd.add_task() && Event.stop(event) },
     'shift+g': function() { maxkir.tree_nav.selectLastInTree() }
   })
 
   keyboard.bind({
     'shift+h': function() { checkvist.removeFocus() },
     'shift+l': function() { checkvist.setFocus() },
-    'shift+o': function() { maxkir.cmd.add_task(true) },
+    'shift+o': function(event) { maxkir.cmd.add_task(true) && Event.stop(event) },
     'alt+g alt+g': function() { maxkir.tree_nav.selectFirstInTree() }
   })
 
