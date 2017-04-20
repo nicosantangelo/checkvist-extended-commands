@@ -13,25 +13,26 @@
       }
     },
 
-    bindWithDelay: function(commands) {
+    bindWithDelay: function(commands, delay) {
       for(var shortcut in commands) {
-        checkvist.addShortcut(shortcut, this._handleDelayedShortcut(commands[shortcut]))
+        checkvist.addShortcut(shortcut, this._handleDelayedShortcut(commands[shortcut], delay))
       }
     },
 
-    _handleDelayedShortcut: function(action) {
+    _handleDelayedShortcut: function(action, delay) {
       var runTimeoutId = null
       var nullTimeoutId = null
+      delay = delay || 150
 
       return function(event) {
         clearTimeout(runTimeoutId)
         clearTimeout(nullTimeoutId)
 
         if (checkvist.commandCanRun() && runTimeoutId === null) {
-          runTimeoutId = setTimeout(function() { action(event) }, 150)
+          runTimeoutId = setTimeout(function() { action(event) }, delay)
         }
 
-        nullTimeoutId = setTimeout(function() { runTimeoutId = null }, 200)
+        nullTimeoutId = setTimeout(function() { runTimeoutId = null }, delay + 50)
       }
     }
   }
