@@ -90,12 +90,14 @@
   keyboard.bindWithDelay({
     h: function() { checkvist.collapse() },
     l: function() { checkvist.expand() },
+    o: function() { maxkir.cmd.add_task() },
     'shift+g': function() { maxkir.tree_nav.selectLastInTree() }
   })
 
   keyboard.bind({
     'shift+h': function() { checkvist.removeFocus() },
     'shift+l': function() { checkvist.setFocus() },
+    'shift+o': function() { maxkir.cmd.add_task(true) },
     'alt+g alt+g': function() { maxkir.tree_nav.selectFirstInTree() }
   })
 

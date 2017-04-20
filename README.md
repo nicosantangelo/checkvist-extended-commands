@@ -10,6 +10,8 @@ It adds four new commands to [Checkvist](https://checkvist.com)
 | `L`  | Focus the list item (same as `Shift →`)  |
 | `h`  | Collapse node (same as `←`)  |
 | `H`  | Un-focus the list item (same as `Shift ←`)  |
+| `o`  | Add below (same as `enter`)  |
+| `O`  | Add above (same as `alt+enter`)  |
 | `alt+g alt+g`  | Go to the first item in the tree (same as `Home` or `Fn+Up`). [Why not `gg`](#caveats)  |
 | `G`  | Go to the last item in the tree (same as `End` or `Fn+Down`)  |
 
