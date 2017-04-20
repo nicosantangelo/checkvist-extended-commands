@@ -95,9 +95,12 @@
   var keyboard = new Keyboard()
 
   keyboard.bindWithDelay({
-    o: function(event) { maxkir.cmd.add_task() && Event.stop(event) },
     'shift+g': function() { maxkir.tree_nav.selectLastInTree() }
   })
+
+  keyboard.bindWithDelay({
+    o: function(event) { maxkir.cmd.add_task() && Event.stop(event) }
+  }, 100)
 
   keyboard.bind({
     h: function() { checkvist.collapse() },
