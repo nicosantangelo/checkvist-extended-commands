@@ -9,13 +9,19 @@
   Keyboard.prototype = {
     bind: function(commands) {
       for(var shortcut in commands) {
-        checkvist.addShortcut(shortcut, commands[shortcut])
+        checkvist.addShortcut(shortcut, this._handleShortcut(commands[shortcut]))
       }
     },
 
     bindWithDelay: function(commands, delay) {
       for(var shortcut in commands) {
         checkvist.addShortcut(shortcut, this._handleDelayedShortcut(commands[shortcut], delay))
+      }
+    },
+
+    _handleShortcut: function(action) {
+      return function(event) {
+        if (checkvist.commandCanRun()) action(event)
       }
     },
 
