@@ -105,6 +105,8 @@
     'shift+h': function() { checkvist.removeFocus() },
     'shift+l': function() { checkvist.setFocus() },
     'shift+o': function(event) { maxkir.cmd.add_task(true) && Event.stop(event) },
+    'meta+j' : function() { maxkir.cmd.move_down_jump() },
+    'meta+k' : function() { maxkir.cmd.move_up_jump() },
     'alt+g alt+g': function() { maxkir.tree_nav.selectFirstInTree() }
   })
 

@@ -14,6 +14,8 @@ It adds four new commands to [Checkvist](https://checkvist.com)
 | `O`  | Add above (same as `alt+enter`)  |
 | `alt+g alt+g`  | Go to the first item in the tree (same as `Home` or `Fn+Up`). [Why not `gg`](#caveats)  |
 | `G`  | Go to the last item in the tree (same as `End` or `Fn+Down`)  |
+| `meta+j`  | macOS users: Move list items down (same as `⌘ ↓`) |
+| `meta+k`  | macOS users: Move list items up (same as `⌘ ↑`)  |
 
 
 # How
