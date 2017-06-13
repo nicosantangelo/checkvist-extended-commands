@@ -20,6 +20,7 @@
     }
   ],
   "web_accessible_resources": [
-    "commands.js"
+    "commands.js",
+    "styles.css"
   ]
 }

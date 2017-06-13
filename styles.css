@@ -1,0 +1,34 @@
+html, body, .main_div {
+  color: #333;
+}
+
+div.coreDiv {
+  padding: 0px 1px;
+}
+
+ul.topLevel ul li.task {
+  font-size: 16px;
+  font-family: 'Helvetica Neue',Arial,sans-serif;
+}
+
+ul.topLevel li.task {
+  font-size: 17px;
+}
+
+ul.topLevel ul.dndUl {
+  padding-left: 37px;
+}
+
+li.selectedFrame div.nodeImage:after,
+li.selectedFrame div.nodeImage.node_collapsed:after {
+  color: #666;
+}
+
+.editable, .editableList {
+  padding: 1px 4px;
+}
+
+.bulleted {
+  font-size: 7px;
+  color: #666;
+}
