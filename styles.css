@@ -24,8 +24,8 @@ li.selectedFrame div.nodeImage.node_collapsed:after {
   color: #666;
 }
 
-.editable, .editableList {
-  padding: 1px 4px;
+li.task, li.checklist, li.due_node {
+  margin: 0;
 }
 
 .bulleted {
